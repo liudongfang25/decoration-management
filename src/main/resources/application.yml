@@ -18,7 +18,7 @@ ruoyi:
 # 开发环境配置
 server:
   # 服务器的HTTP端口，默认为8080
-  port: 8080
+  port: 8009
   servlet:
     # 应用的访问路径
     context-path: /
@@ -59,13 +59,13 @@ spring:
   # redis 配置
   redis:
     # 地址
-    host: localhost
+    host: 121.196.57.218
     # 端口，默认为6379
     port: 6379
     # 数据库索引
     database: 0
     # 密码
-    password: 
+    password: BerdFace1234509876
     # 连接超时时间
     timeout: 10s
     lettuce:
@@ -130,3 +130,10 @@ gen:
   autoRemovePre: false
   # 表前缀（生成类名不会包含表前缀，多个用逗号分隔）
   tablePrefix: sys_
+
+declaration:
+  filePath: /home
+  auth:
+    accessKeyId: a0f215286d96449baeac25dc179a714a
+    accessKeySecret: a333fe38ecc34de2b4dc0b7704a02ef5
+    url: https://third.api.zyh365.com/api/

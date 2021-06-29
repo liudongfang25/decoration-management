@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.zerocarbon.mapper.DeclarationMapper">
+    
+    <resultMap type="Declaration" id="DeclarationResult">
+    	<id     property="title"      column="title"      />
+        <result property="province"    column="province"    />
+        <result property="unit"     column="unit"     />
+        <result property="head"   column="head"   />
+        <result property="contactNumber"    column="contact_number"    />
+        <result property="projectType"    column="project_type"    />
+        <result property="projectField"    column="project_field"    />
+        <result property="projectProfile"    column="project_profile"    />
+        <result property="briefDescription"    column="brief_description"    />
+        <result property="attachUrl"    column="attach_url"    />
+        <result property="account"    column="account"    />
+        <result property="userName"    column="user_name"    />
+        <result property="saveType"    column="save_type"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+    
+    <sql id="selectDeclaration">
+        select *
+		from declaration
+    </sql>
+    
+    <select id="selectById" parameterType="Long" resultMap="DeclarationResult">
+        <include refid="selectDeclaration"/>
+        where id = #{id}
+    </select>
+
+    <select id="selectByAccount" parameterType="String" resultMap="DeclarationResult">
+        <include refid="selectDeclaration"/>
+        where account = #{account} limit 1;
+    </select>
+    
+    <insert id="insert" parameterType="Declaration" useGeneratedKeys="true" keyProperty="id">
+        insert into declaration (
+			<if test="title != null and title != '' ">title,</if>
+			<if test="province != null and province != '' ">province,</if>
+			<if test="unit != null and unit != '' ">unit,</if>
+			<if test="head != null and head != '' ">head,</if>
+			<if test="contactNumber != null and contactNumber != '' ">contact_number,</if>
+			<if test="projectType != null and projectType != '' ">project_type,</if>
+			<if test="projectField != null and projectField != '' ">project_field,</if>
+			<if test="projectProfile != null and projectProfile != '' ">project_profile,</if>
+			<if test="briefDescription != null and briefDescription != '' ">brief_description,</if>
+			<if test="attachUrl != null and attachUrl != '' ">attach_url,</if>
+			<if test="account != null and account != '' ">account,</if>
+			<if test="userName != null and userName != ''">user_name,</if>
+			<if test="saveType != null and saveType != ''">save_type,</if>
+ 			create_time
+        )values(
+			<if test="title != null and title != ''">#{title},</if>
+			<if test="province != null and province != ''">#{province},</if>
+			<if test="unit != null and unit != ''">#{unit},</if>
+			<if test="head != null and head != ''">#{head},</if>
+			<if test="contactNumber != null and contactNumber != ''">#{contactNumber},</if>
+			<if test="projectType != null and projectType != ''">#{projectType},</if>
+			<if test="projectField != null and projectField != ''">#{projectField},</if>
+			<if test="projectProfile != null and projectProfile != ''">#{projectProfile},</if>
+			<if test="briefDescription != null and briefDescription != ''">#{briefDescription},</if>
+			<if test="attachUrl != null and attachUrl != ''">#{attachUrl},</if>
+			<if test="account != null and account != ''">#{account},</if>
+			<if test="userName != null and userName != ''">#{userName},</if>
+			<if test="saveType != null and saveType != ''">#{saveType},</if>
+ 			sysdate()
+		)
+    </insert>
+	 
+    <update id="updateById" parameterType="Declaration">
+        update declaration
+        <set>
+            <if test="title != null and title != ''">title = #{title},</if>
+            <if test="province != null and province != ''">province = #{province},</if>
+            <if test="unit != null and unit != ''">unit = #{unit},</if>
+            <if test="head != null and head != ''">head = #{head},</if>
+            <if test="contactNumber != null and contactNumber != ''">contact_number = #{contactNumber},</if>
+            <if test="projectType != null and projectType != ''">project_type = #{projectType},</if>
+            <if test="projectField != null and projectField != ''">project_field = #{projectField},</if>
+            <if test="projectProfile != null and projectProfile != ''">project_profile = #{projectProfile},</if>
+            <if test="briefDescription != null and briefDescription != ''">brief_description = #{briefDescription},</if>
+            <if test="attachUrl != null and attachUrl != ''">attach_url = #{attachUrl},</if>
+            <if test="account != null and account != ''">account = #{account},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="saveType != null and saveType != ''">save_type = #{saveType},</if>
+ 			update_time = sysdate()
+        </set>
+        where id = #{id}
+    </update>
+	
+    <delete id="deleteById" parameterType="Long">
+        delete from declaration where id = #{id}
+    </delete>
+    
+</mapper>

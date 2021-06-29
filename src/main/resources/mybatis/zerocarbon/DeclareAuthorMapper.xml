@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.zerocarbon.mapper.DeclareAuthorMapper">
+    
+    <resultMap type="DeclareAuthor" id="DeclareAuthorResult">
+    	<id     property="declarationId"      column="declaration_id"      />
+        <result property="name"    column="name"    />
+        <result property="unit"     column="unit"     />
+        <result property="position"   column="position"   />
+        <result property="email"    column="emailemail"    />
+        <result property="contactNumber"      column="contact_number"      />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+    
+    <sql id="selectDeclareAuthorVo">
+        select *
+		from declare_author
+    </sql>
+
+    <select id="selectByDeclarationId" parameterType="Long" resultMap="DeclareAuthorResult">
+        <include refid="selectDeclareAuthorVo"/>
+        where declaration_id = #{declarationId}
+    </select>
+
+    <insert id="insert" parameterType="DeclareAuthor" useGeneratedKeys="true" keyProperty="id">
+        insert into declare_author (
+        <if test="declarationId != null and declarationId != '' ">declaration_id,</if>
+        <if test="name != null and name != '' ">name,</if>
+        <if test="unit != null and unit != '' ">unit,</if>
+        <if test="position != null and position != '' ">position,</if>
+        <if test="email != null and email != '' ">email,</if>
+        <if test="contactNumber != null and contactNumber != '' ">contact_number,</if>
+        create_time
+        )values(
+        <if test="declarationId != null and declarationId != ''">#{declarationId},</if>
+        <if test="name != null and name != ''">#{name},</if>
+        <if test="unit != null and unit != ''">#{unit},</if>
+        <if test="position != null and position != ''">#{position},</if>
+        <if test="email != null and email != ''">#{email},</if>
+        <if test="contactNumber != null and contactNumber != ''">#{contactNumber},</if>
+        sysdate()
+        )
+    </insert>
+
+    <delete id="removeByDeclarationId" parameterType="Long">
+        delete from declare_author where declaration_id = #{declarationId}
+    </delete>
+    
+</mapper>

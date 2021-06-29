@@ -1,8 +1,9 @@
 package com.ruoyi.framework.web.domain;
 
-import java.util.HashMap;
 import com.ruoyi.common.constant.HttpStatus;
 import com.ruoyi.common.utils.StringUtils;
+
+import java.util.HashMap;
 
 /**
  * 操作消息提醒
@@ -86,7 +87,7 @@ public class AjaxResult extends HashMap<String, Object>
      */
     public static AjaxResult success(String msg)
     {
-        return AjaxResult.success(msg, null);
+        return AjaxResult.success("操作成功", msg);
     }
 
     /**

@@ -202,6 +202,12 @@
 			<version>${poi.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<optional>true</optional>
+		</dependency>
+
 		<!-- velocity代码生成使用模板 -->
 		<dependency>
 			<groupId>org.apache.velocity</groupId>
