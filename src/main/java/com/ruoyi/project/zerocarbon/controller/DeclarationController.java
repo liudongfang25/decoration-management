@@ -70,7 +70,7 @@ public class DeclarationController extends BaseController {
             e.printStackTrace();
         }
         log.info("getSignature: zyzid {},key {}",zyzid,key);
-        return AjaxResult.success(key);
+        return AjaxResult.success("操作成功",key);
     }
 
     @GetMapping("/zyz/getUserByZyzid")
@@ -264,8 +264,9 @@ public class DeclarationController extends BaseController {
             BeanUtils.copyProperties(declarationHistory,declarationDTO);
             List<DeclareAuthor> collection = declareAuthorMapper.selectByDeclarationId(declarationHistory.getId());
             declarationDTO.setDeclareAuthors(collection);
+            return AjaxResult.success(declarationDTO);
         }
-        return AjaxResult.success(declarationDTO);
+        return AjaxResult.success();
     }
 
     @PostMapping("/attach/upload")
@@ -283,7 +284,8 @@ public class DeclarationController extends BaseController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return AjaxResult.success(dest.getAbsolutePath());
+//            return AjaxResult.success(dest.getAbsolutePath());
+            return AjaxResult.success("操作成功",dest.getAbsolutePath());
         }
         return AjaxResult.success();
     }
