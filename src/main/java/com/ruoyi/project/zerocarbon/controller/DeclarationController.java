@@ -1,6 +1,8 @@
 package com.ruoyi.project.zerocarbon.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.zerocarbon.auth.APIValidateUtil;
@@ -9,7 +11,6 @@ import com.ruoyi.project.zerocarbon.domain.DeclareAuthor;
 import com.ruoyi.project.zerocarbon.domain.dto.DeclarationDTO;
 import com.ruoyi.project.zerocarbon.mapper.DeclarationMapper;
 import com.ruoyi.project.zerocarbon.mapper.DeclareAuthorMapper;
-import com.ruoyi.project.zerocarbon.service.IDeclarationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,10 @@ public class DeclarationController extends BaseController {
     private String accessKeyId;
     @Value("${declaration.auth.accessKeySecret}")
     private String accessKeySecret;
+    @Value("${declaration.auth.url}")
+    private String url;
+    private String zyzUrl = "https://third.api.zyh365.com/api/volunteer/info.do";
+    private String tokenUrl = "https://third.api.zyh365.com/api/login/token/loginInfoByShareToken.do";
 
     @GetMapping("/signature/get")
     public AjaxResult getSignature(String zyzid)
@@ -68,17 +73,86 @@ public class DeclarationController extends BaseController {
         return AjaxResult.success(key);
     }
 
-//    public static void main(String[] args) {
+    @GetMapping("/zyz/getUserByZyzid")
+    public AjaxResult getUserByZyzid(String zyzid)
+    {
+        if (StringUtils.isEmpty(zyzid)){
+            return AjaxResult.error("zyzid不能为空");
+        }
+        Map<String,String> mapv=new HashMap<String, String>();
+        mapv.put("AccessKeyId", accessKeyId);
+        if (StringUtils.isNotEmpty(zyzid)){
+            mapv.put("zyzid", zyzid);
+        }
+        try {
+            String key = apiValidateUtil.computeSignature(mapv, accessKeySecret);
+            String rspStr = "zyzid="+mapv.get("zyzid")+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+key;
+            String response = HttpUtils.sendGet(zyzUrl, rspStr);
+
+            return AjaxResult.success(JSONObject.parseObject(response));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AjaxResult.error("获取用户信息失败");
+    }
+
+    /**
+     * 根据token获取志愿者id
+     * @param token
+     * @return
+     */
+    @GetMapping("/zyz/getZyzidByToken")
+    public AjaxResult getZyzidByToken(String token)
+    {
+        if (StringUtils.isEmpty(token)){
+            return AjaxResult.error("token不能为空");
+        }
+        Map<String,String> mapv=new HashMap<String, String>();
+        mapv.put("AccessKeyId", accessKeyId);
+        try {
+            String key = apiValidateUtil.computeSignature(mapv, accessKeySecret);
+            String rspStr = "&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+key;
+            String response = HttpUtils.sendPost(tokenUrl, rspStr, token);
+            return AjaxResult.success(JSONObject.parseObject(response));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AjaxResult.error("获取志愿者id失败");
+    }
+
+    public static void main(String[] args) {
 //        Map<String,String> mapv=new HashMap<String, String>();
-//        mapv.put("AccessKeyId", "c8c2d572f7594056ba7eca61b0313f39");
+//        mapv.put("AccessKeyId", "a0f215286d96449baeac25dc179a714a");
 //        mapv.put("zyzid", "1621735478637215929cb86994f57bd6d43b3689a288f");
 //        try {
-//            String s = new APIValidateUtil().computeSignature(mapv, "503387097bda47b5aa6b9305b5d4cceb");
-//            System.out.println(s);
+//            String s = new APIValidateUtil().computeSignature(mapv, "a333fe38ecc34de2b4dc0b7704a02ef5");
+//            System.out.println(mapv.toString());
+////            String rspStr = "ip=" + ip + "&json=true";
+//            String rspStr = "zyzid="+mapv.get("zyzid")+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+s;
+//            System.out.println(rspStr);
+//            String s1 = HttpUtils.sendGet("https://third.api.zyh365.com/api/volunteer/info.do", rspStr);
+//
+//            System.out.println(s1);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-//    }
+        Map<String,String> mapv=new HashMap<String, String>();
+        mapv.put("AccessKeyId", "a0f215286d96449baeac25dc179a714a");
+        mapv.put("username", "13758228031");
+        mapv.put("password", "Aa756920");
+        try {
+            String s = new APIValidateUtil().computeSignature(mapv, "a333fe38ecc34de2b4dc0b7704a02ef5");
+            System.out.println(s);
+//            //            String rspStr = "ip=" + ip + "&json=true";
+//            String rspStr = "zyzid="+mapv.get("zyzid")+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+s;
+//            System.out.println(rspStr);
+//            String s1 = HttpUtils.sendGet("https://third.api.zyh365.com/api/volunteer/info.do", rspStr);
+//
+//            System.out.println(s1);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     /**
      * 注册
