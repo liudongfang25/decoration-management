@@ -104,7 +104,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="saveType != null and saveType != ''">
                 AND save_type = #{saveType}
             </if>
-            <if test="saveTypeList != null and saveTypeList.length > 0">
+            <if test="saveTypeList != null and saveTypeList.size() > 0">
                 AND save_type in
                 <foreach collection="saveTypeList" item="typeItem" open="(" separator="," close=")">
                     #{typeItem}
