@@ -111,6 +111,7 @@ create table sys_role (
   dept_check_strictly  tinyint(1)      default 1                  comment '部门树选择项是否关联显示',
   status               char(1)         not null                   comment '角色状态（0正常 1停用）',
   del_flag             char(1)         default '0'                comment '删除标志（0代表存在 2代表删除）',
+  role_region        varchar(64)    default null                comment '角色范围（全国或省区）',
   create_by            varchar(64)     default ''                 comment '创建者',
   create_time          datetime                                   comment '创建时间',
   update_by            varchar(64)     default ''                 comment '更新者',
@@ -683,3 +684,48 @@ create table gen_table_column (
   update_time       datetime                                   comment '更新时间',
   primary key (column_id)
 ) engine=innodb auto_increment=1 comment = '代码生成业务表字段';
+
+drop table if exists user_region;
+CREATE TABLE `user_region` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` bigint(20) NOT NULL COMMENT '用户id',
+  `region` varchar(64) NOT NULL COMMENT '区域权限',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+drop table if exists declaration;
+CREATE TABLE `declaration` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `title` varchar(255) DEFAULT NULL COMMENT '标题',
+  `province` varchar(255) DEFAULT NULL COMMENT '省份',
+  `unit` varchar(255) DEFAULT NULL COMMENT '所在单位',
+  `head` varchar(255) DEFAULT NULL COMMENT '负责人',
+  `contact_number` varchar(255) DEFAULT NULL COMMENT '联系电话',
+  `project_type` varchar(255) DEFAULT NULL COMMENT '项目组别',
+  `project_field` varchar(255) DEFAULT NULL COMMENT '项目领域',
+  `project_profile` varchar(1000) DEFAULT NULL COMMENT '项目简介',
+  `brief_description` varchar(6000) DEFAULT NULL COMMENT '简要说明',
+  `attach_url` varchar(255) DEFAULT NULL COMMENT '附件',
+  `account` varchar(64) NOT NULL COMMENT '账号',
+  `user_name` varchar(255) DEFAULT NULL COMMENT '创建人',
+  `save_type` tinyint(3) NOT NULL DEFAULT '0' COMMENT '0：草稿；1：提交',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8;
+
+drop table if exists declare_author;
+CREATE TABLE `declare_author` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `declaration_id` bigint(20) NOT NULL COMMENT '申报id',
+  `name` varchar(255) DEFAULT NULL COMMENT '姓名',
+  `unit` varchar(255) DEFAULT NULL COMMENT '所在单位',
+  `position` varchar(255) DEFAULT NULL COMMENT '职务',
+  `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
+  `contact_number` varchar(255) DEFAULT NULL COMMENT '联系方式',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
