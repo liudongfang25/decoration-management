@@ -4,13 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.ruoyi</groupId>
-	<artifactId>ruoyi</artifactId>
+	<artifactId>management</artifactId>
 	<version>3.5.0</version>
 	<packaging>jar</packaging>
 
-	<name>ruoyi</name>
-	<url>http://www.ruoyi.vip</url>
-	<description>若依管理系统</description>
+	<name>management</name>
+	<description>管理系统</description>
 
 	<parent>
 		<groupId>org.springframework.boot</groupId>
