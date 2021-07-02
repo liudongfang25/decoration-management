@@ -50,10 +50,10 @@ public class DeclarationController extends BaseController {
     private String accessKeyId;
     @Value("${declaration.auth.accessKeySecret}")
     private String accessKeySecret;
-    @Value("${declaration.auth.url}")
-    private String url;
-    private String zyzUrl = "https://third.api.zyh365.com/api/volunteer/info.do";
-    private String tokenUrl = "https://third.api.zyh365.com/api/login/token/loginInfoByShareToken.do";
+    @Value("${declaration.auth.zyzUrl}")
+    private String zyzUrl;
+    @Value("${declaration.auth.tokenUrl}")
+    private String tokenUrl;
 
     @GetMapping("/signature/get")
     public AjaxResult getSignature(String zyzid)
@@ -120,39 +120,39 @@ public class DeclarationController extends BaseController {
         return AjaxResult.error("获取志愿者id失败");
     }
 
-    public static void main(String[] args) {
+//    public static void main(String[] args) {
+////        Map<String,String> mapv=new HashMap<String, String>();
+////        mapv.put("AccessKeyId", "a0f215286d96449baeac25dc179a714a");
+////        mapv.put("zyzid", "1621735478637215929cb86994f57bd6d43b3689a288f");
+////        try {
+////            String s = new APIValidateUtil().computeSignature(mapv, "a333fe38ecc34de2b4dc0b7704a02ef5");
+////            System.out.println(mapv.toString());
+//////            String rspStr = "ip=" + ip + "&json=true";
+////            String rspStr = "zyzid="+mapv.get("zyzid")+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+s;
+////            System.out.println(rspStr);
+////            String s1 = HttpUtils.sendGet("https://third.api.zyh365.com/api/volunteer/info.do", rspStr);
+////
+////            System.out.println(s1);
+////        } catch (Exception e) {
+////            e.printStackTrace();
+////        }
 //        Map<String,String> mapv=new HashMap<String, String>();
 //        mapv.put("AccessKeyId", "a0f215286d96449baeac25dc179a714a");
-//        mapv.put("zyzid", "1621735478637215929cb86994f57bd6d43b3689a288f");
+//        mapv.put("username", "13758228031");
+//        mapv.put("password", "Aa756920");
 //        try {
 //            String s = new APIValidateUtil().computeSignature(mapv, "a333fe38ecc34de2b4dc0b7704a02ef5");
-//            System.out.println(mapv.toString());
-////            String rspStr = "ip=" + ip + "&json=true";
-//            String rspStr = "zyzid="+mapv.get("zyzid")+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+s;
-//            System.out.println(rspStr);
-//            String s1 = HttpUtils.sendGet("https://third.api.zyh365.com/api/volunteer/info.do", rspStr);
-//
-//            System.out.println(s1);
+//            System.out.println(s);
+////            //            String rspStr = "ip=" + ip + "&json=true";
+////            String rspStr = "zyzid="+mapv.get("zyzid")+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+s;
+////            System.out.println(rspStr);
+////            String s1 = HttpUtils.sendGet("https://third.api.zyh365.com/api/volunteer/info.do", rspStr);
+////
+////            System.out.println(s1);
 //        } catch (Exception e) {
 //            e.printStackTrace();
 //        }
-        Map<String,String> mapv=new HashMap<String, String>();
-        mapv.put("AccessKeyId", "a0f215286d96449baeac25dc179a714a");
-        mapv.put("username", "13758228031");
-        mapv.put("password", "Aa756920");
-        try {
-            String s = new APIValidateUtil().computeSignature(mapv, "a333fe38ecc34de2b4dc0b7704a02ef5");
-            System.out.println(s);
-//            //            String rspStr = "ip=" + ip + "&json=true";
-//            String rspStr = "zyzid="+mapv.get("zyzid")+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+s;
-//            System.out.println(rspStr);
-//            String s1 = HttpUtils.sendGet("https://third.api.zyh365.com/api/volunteer/info.do", rspStr);
-//
-//            System.out.println(s1);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+//    }
 
     /**
      * 注册

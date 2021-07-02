@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.zerocarbon.mapper.UserRegionMapper">
+    
+    <resultMap type="UserRegion" id="UserRegionResult">
+    	<id     property="userId"      column="user_id"      />
+        <result property="region"    column="region"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+    
+    <sql id="selectDeclareAuthorVo">
+        select *
+		from user_region
+    </sql>
+
+    <select id="selectByUserId" parameterType="Long" resultMap="UserRegionResult">
+        <include refid="selectDeclareAuthorVo"/>
+        where user_id = #{userId}
+    </select>
+
+    <insert id="insert" parameterType="DeclareAuthor" useGeneratedKeys="true" keyProperty="id">
+        insert into user_region (
+        <if test="userId != null and userId != '' ">user_id,</if>
+        <if test="region != null and region != '' ">region,</if>
+        create_time
+        )values(
+        <if test="userId != null and userId != ''">#{userId},</if>
+        <if test="region != null and region != ''">#{region},</if>
+        sysdate()
+        )
+    </insert>
+
+    <delete id="deleteByUserId" parameterType="Long">
+        delete from user_region where user_id = #{userId}
+    </delete>
+    
+</mapper>

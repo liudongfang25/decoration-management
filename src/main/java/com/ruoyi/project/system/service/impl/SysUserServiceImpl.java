@@ -1,29 +1,27 @@
 package com.ruoyi.project.system.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.exception.CustomException;
 import com.ruoyi.common.utils.SecurityUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.aspectj.lang.annotation.DataScope;
-import com.ruoyi.project.system.domain.SysPost;
-import com.ruoyi.project.system.domain.SysRole;
-import com.ruoyi.project.system.domain.SysUser;
-import com.ruoyi.project.system.domain.SysUserPost;
-import com.ruoyi.project.system.domain.SysUserRole;
-import com.ruoyi.project.system.mapper.SysPostMapper;
-import com.ruoyi.project.system.mapper.SysRoleMapper;
-import com.ruoyi.project.system.mapper.SysUserMapper;
-import com.ruoyi.project.system.mapper.SysUserPostMapper;
-import com.ruoyi.project.system.mapper.SysUserRoleMapper;
+import com.ruoyi.project.system.domain.*;
+import com.ruoyi.project.system.mapper.*;
 import com.ruoyi.project.system.service.ISysConfigService;
 import com.ruoyi.project.system.service.ISysUserService;
+import com.ruoyi.project.zerocarbon.domain.Declaration;
+import com.ruoyi.project.zerocarbon.domain.UserRegion;
+import com.ruoyi.project.zerocarbon.mapper.UserRegionMapper;
+import org.apache.commons.collections.CollectionUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 用户 业务层处理
@@ -52,6 +50,9 @@ public class SysUserServiceImpl implements ISysUserService
 
     @Autowired
     private ISysConfigService configService;
+
+    @Autowired
+    private UserRegionMapper userRegionMapper;
 
     /**
      * 根据条件分页查询用户列表
@@ -87,7 +88,13 @@ public class SysUserServiceImpl implements ISysUserService
     @Override
     public SysUser selectUserById(Long userId)
     {
-        return userMapper.selectUserById(userId);
+        SysUser sysUser = userMapper.selectUserById(userId);
+
+        List<UserRegion> userRegionList = userRegionMapper.selectByUserId(userId);
+        if (CollectionUtils.isNotEmpty(userRegionList)){
+            sysUser.setRegionList(userRegionList.stream().map(UserRegion :: getRegion).collect(Collectors.toList()));
+        }
+        return sysUser;
     }
 
     /**
@@ -217,6 +224,10 @@ public class SysUserServiceImpl implements ISysUserService
         insertUserPost(user);
         // 新增用户与角色管理
         insertUserRole(user);
+
+//        保存用户区域信息
+        saveUserRegion(user.getUserId(),user.getRegionList());
+
         return rows;
     }
 
@@ -239,7 +250,14 @@ public class SysUserServiceImpl implements ISysUserService
         userPostMapper.deleteUserPostByUserId(userId);
         // 新增用户与岗位管理
         insertUserPost(user);
-        return userMapper.updateUser(user);
+        int updateUser = userMapper.updateUser(user);
+        //删除用户区域信息
+        userRegionMapper.deleteByUserId(userId);
+
+        //保存用户区域信息
+        saveUserRegion(userId, user.getRegionList());
+
+        return updateUser;
     }
 
     /**
@@ -459,5 +477,16 @@ public class SysUserServiceImpl implements ISysUserService
             successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
         }
         return successMsg.toString();
+    }
+
+    private void saveUserRegion(Long userId, List<String> regionList){
+        if (CollectionUtils.isNotEmpty(regionList)){
+            regionList.forEach(region -> {
+                UserRegion userRegion = new UserRegion();
+                userRegion.setUserId(userId);
+                userRegion.setRegion(region);
+                userRegionMapper.insert(userRegion);
+            });
+        }
     }
 }

@@ -70,6 +70,49 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
  			sysdate()
 		)
     </insert>
+
+    <select id="selectDecorationList" parameterType="com.ruoyi.project.zerocarbon.domain.vo.DeclarationVo" resultMap="DeclarationResult">
+        <include refid="selectDeclaration"/>
+        <where>
+            <if test="title != null and title != ''">
+                AND title = #{title}
+            </if>
+            <if test="region != null and region != '' and region != '全国'">
+                AND province = #{region}
+            </if>
+            <if test="unit != null and unit != ''">
+                AND unit = #{unit}
+            </if>
+            <if test="head != null and head != ''">
+                AND head = #{head}
+            </if>
+            <if test="contactNumber != null and contactNumber != ''">
+                AND contact_number like concat('%', #{contactNumber}, '%')
+            </if>
+            <if test="projectType != null and projectType != ''">
+                AND project_type = #{projectType}
+            </if>
+            <if test="projectField != null and projectField != ''">
+                AND project_field = #{projectField}
+            </if>
+            <if test="account != null and account != ''">
+                AND account = #{account}
+            </if>
+            <if test="userName != null and userName != ''">
+                AND user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="saveType != null and saveType != ''">
+                AND save_type = #{saveType}
+            </if>
+            <if test="saveTypeList != null and saveTypeList.length > 0">
+                AND save_type in
+                <foreach collection="saveTypeList" item="typeItem" open="(" separator="," close=")">
+                    #{typeItem}
+                </foreach>
+            </if>
+        </where>
+        order by id desc
+    </select>
 	 
     <update id="updateById" parameterType="Declaration">
         update declaration
