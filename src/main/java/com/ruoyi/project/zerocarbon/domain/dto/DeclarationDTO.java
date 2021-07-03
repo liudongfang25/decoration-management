@@ -31,6 +31,6 @@ public class DeclarationDTO implements Serializable {
   private String userName;
   private Integer saveType;//0：草稿；1：提交
   private List<DeclareAuthor> declareAuthors;
-  private List<DeclareFile> DeclareFiles;
+  private List<DeclareFile> declareFiles;
 
 }
