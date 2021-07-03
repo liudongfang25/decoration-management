@@ -76,7 +76,9 @@ public class AuditController extends BaseController {
         if (declarationVo.getUserId() != null && StringUtils.isEmpty(declarationVo.getRegion())){
             List<UserRegion> userRegions = userRegionMapper.selectByUserId(declarationVo.getUserId());
             if (CollectionUtils.isNotEmpty(userRegions)){
-
+                if (userRegions.get(0).getRegion().equals("全国")){
+                    declarationVo.setRegion("全国");
+                }
             }else {
                 return getDataTable(new ArrayList<>());
             }
