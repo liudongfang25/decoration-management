@@ -9,7 +9,6 @@ import com.ruoyi.project.system.domain.*;
 import com.ruoyi.project.system.mapper.*;
 import com.ruoyi.project.system.service.ISysConfigService;
 import com.ruoyi.project.system.service.ISysUserService;
-import com.ruoyi.project.zerocarbon.domain.Declaration;
 import com.ruoyi.project.zerocarbon.domain.UserRegion;
 import com.ruoyi.project.zerocarbon.mapper.UserRegionMapper;
 import org.apache.commons.collections.CollectionUtils;
@@ -64,7 +63,22 @@ public class SysUserServiceImpl implements ISysUserService
     @DataScope(deptAlias = "d", userAlias = "u")
     public List<SysUser> selectUserList(SysUser user)
     {
-        return userMapper.selectUserList(user);
+        List<SysUser> sysUsers = userMapper.selectUserList(user);
+        if(CollectionUtils.isNotEmpty(sysUsers)){
+            sysUsers.forEach(sysUser -> {
+                if(sysUser.getUserId() != null){
+                    List<UserRegion> userRegions = userRegionMapper.selectByUserId(sysUser.getUserId());
+                    if (CollectionUtils.isNotEmpty(userRegions)){
+                        sysUser.setRegionList(userRegions.stream().map(UserRegion::getRegion).collect(Collectors.toList()));
+                    }
+                    List<Integer> roleIdList = roleMapper.selectRoleListByUserId(sysUser.getUserId());
+                    if (CollectionUtils.isNotEmpty(roleIdList)){
+                        sysUser.setRoleIds(roleIdList.toArray(new Long[roleIdList.size()]));
+                    }
+                }
+            });
+        }
+        return sysUsers;
     }
 
     /**

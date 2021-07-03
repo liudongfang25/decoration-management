@@ -2,6 +2,7 @@ package com.ruoyi.project.zerocarbon.mapper;
 
 import com.ruoyi.project.zerocarbon.domain.Declaration;
 import com.ruoyi.project.zerocarbon.domain.vo.DeclarationVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -25,5 +26,7 @@ public interface DeclarationMapper
     public int deleteById(Long configId);
 
     public List<Declaration> selectDecorationList(DeclarationVo declarationVo);
+
+    Integer countByRegion(@Param("province") String province, @Param("managementType")Integer managementType);
 
 }

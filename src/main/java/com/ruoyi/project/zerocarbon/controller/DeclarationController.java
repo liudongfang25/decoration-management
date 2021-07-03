@@ -7,10 +7,12 @@ import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.zerocarbon.auth.APIValidateUtil;
 import com.ruoyi.project.zerocarbon.domain.Declaration;
+import com.ruoyi.project.zerocarbon.domain.DeclarationFile;
 import com.ruoyi.project.zerocarbon.domain.DeclareAuthor;
 import com.ruoyi.project.zerocarbon.domain.dto.DeclarationDTO;
 import com.ruoyi.project.zerocarbon.mapper.DeclarationMapper;
 import com.ruoyi.project.zerocarbon.mapper.DeclareAuthorMapper;
+import com.ruoyi.project.zerocarbon.mapper.DeclareFileMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +44,8 @@ public class DeclarationController extends BaseController {
     private DeclarationMapper declarationMapper;
     @Autowired
     private DeclareAuthorMapper declareAuthorMapper;
+    @Autowired
+    private DeclareFileMapper declareFileMapper;
     @Autowired
     private APIValidateUtil apiValidateUtil;
     @Value("${declaration.filePath}")
@@ -192,16 +196,36 @@ public class DeclarationController extends BaseController {
             }
             declarationMapper.deleteById(declarationHistory.getId());
             declareAuthorMapper.removeByDeclarationId(declarationHistory.getId());
+            declareFileMapper.removeByDeclarationId(declarationHistory.getId());
         }
         BeanUtils.copyProperties(dto,declaration);
+        //序列号,查询已有省份+managementType类型数据
+        Integer countByRegion = declarationMapper.countByRegion(dto.getProvince(), dto.getManagementType());
+        if (countByRegion == null || countByRegion<=0){
+            declaration.setRegionSerial(dto.getProvince()+1);
+        }else {
+            int count = countByRegion + 1;
+            declaration.setRegionSerial(dto.getProvince()+count);
+        }
+        //作者人数
+        if (!CollectionUtils.isEmpty(dto.getDeclareAuthors())){
+            declaration.setAuthorNumber(dto.getDeclareAuthors().size());
+        }
         int saveSuccess = declarationMapper.insert(declaration);
         if (saveSuccess > 0){
+            Long declarationId = declaration.getId();
             if (!CollectionUtils.isEmpty(dto.getDeclareAuthors())){
-                Long declarationId = declaration.getId();
                 for (int i = 0; i < dto.getDeclareAuthors().size(); i++) {
                     DeclareAuthor declareAuthor = dto.getDeclareAuthors().get(i);
                     declareAuthor.setDeclarationId(declarationId);
                     declareAuthorMapper.insert(declareAuthor);
+                }
+            }
+            if (!CollectionUtils.isEmpty(dto.getDeclarationFiles())){
+                for (int i = 0; i < dto.getDeclarationFiles().size(); i++) {
+                    DeclarationFile declareFile = dto.getDeclarationFiles().get(i);
+                    declareFile.setDeclarationId(declarationId);
+                    declareFileMapper.insert(declareFile);
                 }
             }
         }
@@ -222,6 +246,7 @@ public class DeclarationController extends BaseController {
                 return AjaxResult.error("申报已经提交，不可修改");
             }
             declareAuthorMapper.removeByDeclarationId(declarationHistory.getId());
+            declareFileMapper.removeByDeclarationId(declarationHistory.getId());
             BeanUtils.copyProperties(dto,declarationHistory);
             declarationMapper.updateById(declarationHistory);
             if (!CollectionUtils.isEmpty(dto.getDeclareAuthors())){
@@ -232,18 +257,32 @@ public class DeclarationController extends BaseController {
                     declareAuthorMapper.insert(declareAuthor);
                 }
             }
+            if (!CollectionUtils.isEmpty(dto.getDeclarationFiles())){
+                for (int i = 0; i < dto.getDeclarationFiles().size(); i++) {
+                    DeclarationFile declareFile = dto.getDeclarationFiles().get(i);
+                    declareFile.setDeclarationId(declarationHistory.getId());
+                    declareFileMapper.insert(declareFile);
+                }
+            }
             return AjaxResult.success();
         }
         Declaration declaration = new Declaration();
         BeanUtils.copyProperties(dto,declaration);
         int saveSuccess = declarationMapper.insert(declaration);
         if (saveSuccess > 0){
+            Long declarationId = declaration.getId();
             if (!CollectionUtils.isEmpty(dto.getDeclareAuthors())){
-                Long declarationId = declaration.getId();
                 for (int i = 0; i < dto.getDeclareAuthors().size(); i++) {
                     DeclareAuthor declareAuthor = dto.getDeclareAuthors().get(i);
                     declareAuthor.setDeclarationId(declarationId);
                     declareAuthorMapper.insert(declareAuthor);
+                }
+            }
+            if (!CollectionUtils.isEmpty(dto.getDeclarationFiles())){
+                for (int i = 0; i < dto.getDeclarationFiles().size(); i++) {
+                    DeclarationFile declareFile = dto.getDeclarationFiles().get(i);
+                    declareFile.setDeclarationId(declarationId);
+                    declareFileMapper.insert(declareFile);
                 }
             }
         }

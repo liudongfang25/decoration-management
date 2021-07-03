@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.zerocarbon.mapper.DeclareFileMapper">
+    
+    <resultMap type="DeclarationFile" id="DeclarationFileResult">
+        <id     property="id"      column="id"      />
+        <result property="declarationId"   column="declaration_id"  />
+        <result property="type"    column="type"    />
+        <result property="path"    column="path"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+    
+    <sql id="selectDeclarationFileVo">
+        select *
+		from declaration_file
+    </sql>
+
+    <select id="selectByDeclarationId" parameterType="Long" resultMap="DeclarationFileResult">
+        <include refid="selectDeclareAuthorVo"/>
+        where declaration_id = #{declarationId}
+    </select>
+
+    <insert id="insert" parameterType="DeclareAuthor" useGeneratedKeys="true" keyProperty="id">
+        insert into declaration_file (
+        <if test="declarationId != null and declarationId != '' ">declaration_id,</if>
+        <if test="type != null and type != '' ">type,</if>
+        <if test="path != null and path != '' ">path,</if>
+        create_time
+        )values(
+        <if test="declarationId != null and declarationId != ''">#{declarationId},</if>
+        <if test="type != null and type != ''">#{type},</if>
+        <if test="path != null and path != ''">#{path},</if>
+        sysdate()
+        )
+    </insert>
+
+    <delete id="removeByDeclarationId" parameterType="Long">
+        delete from declaration_file where declaration_id = #{declarationId}
+    </delete>
+    
+</mapper>

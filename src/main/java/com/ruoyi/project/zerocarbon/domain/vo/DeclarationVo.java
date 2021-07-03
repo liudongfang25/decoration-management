@@ -11,6 +11,8 @@ import java.util.List;
 @Accessors(chain = true)
 public class DeclarationVo extends BaseEntity implements Serializable {
 
+  private String managementName;
+  private Integer managementType;
   private String title;
   private String region;
   private String unit;
@@ -21,6 +23,8 @@ public class DeclarationVo extends BaseEntity implements Serializable {
   private String account;
   private String userName;//填报人
   private Integer saveType;//0：草稿；1：提交;2:APP预约
+  private Integer authorNumber;//成员人数
+  private String regionSerial;//省+序列号
   private List<Integer> saveTypeList;
 
 }

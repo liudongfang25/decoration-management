@@ -5,7 +5,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.project.zerocarbon.mapper.DeclarationMapper">
     
     <resultMap type="Declaration" id="DeclarationResult">
-    	<id     property="title"      column="title"      />
+    	<id     property="id"      column="id"      />
+    	<result property="managementName"      column="management_name"      />
+    	<result property="managementType"      column="management_type"      />
+    	<result property="title"      column="title"      />
         <result property="province"    column="province"    />
         <result property="unit"     column="unit"     />
         <result property="head"   column="head"   />
@@ -14,10 +17,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="projectField"    column="project_field"    />
         <result property="projectProfile"    column="project_profile"    />
         <result property="briefDescription"    column="brief_description"    />
+        <result property="innovation"    column="innovation"    />
+        <result property="practicability"    column="practicability"    />
+        <result property="exhibition"    column="exhibition"    />
         <result property="attachUrl"    column="attach_url"    />
         <result property="account"    column="account"    />
         <result property="userName"    column="user_name"    />
         <result property="saveType"    column="save_type"    />
+        <result property="authorNumber"    column="author_number"    />
+        <result property="regionSerial"    column="region_serial"    />
         <result property="createTime"    column="create_time"    />
         <result property="updateTime"    column="update_time"    />
     </resultMap>
@@ -36,9 +44,16 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectDeclaration"/>
         where account = #{account} limit 1;
     </select>
+
+    <select id="countByRegion" resultType="Integer">
+        select count(id)
+		from declaration where province = #{province} and management_type = #{managementType};
+    </select>
     
     <insert id="insert" parameterType="Declaration" useGeneratedKeys="true" keyProperty="id">
         insert into declaration (
+			<if test="managementName != null and managementName != '' ">management_name,</if>
+			<if test="managementType != null and managementType != '' ">management_type,</if>
 			<if test="title != null and title != '' ">title,</if>
 			<if test="province != null and province != '' ">province,</if>
 			<if test="unit != null and unit != '' ">unit,</if>
@@ -48,12 +63,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="projectField != null and projectField != '' ">project_field,</if>
 			<if test="projectProfile != null and projectProfile != '' ">project_profile,</if>
 			<if test="briefDescription != null and briefDescription != '' ">brief_description,</if>
+			<if test="innovation != null and innovation != '' ">innovation,</if>
+			<if test="practicability != null and practicability != '' ">practicability,</if>
+			<if test="exhibition != null and exhibition != '' ">exhibition,</if>
 			<if test="attachUrl != null and attachUrl != '' ">attach_url,</if>
 			<if test="account != null and account != '' ">account,</if>
 			<if test="userName != null and userName != ''">user_name,</if>
 			<if test="saveType != null and saveType != ''">save_type,</if>
+            <if test="authorNumber != null and authorNumber != ''">author_number,</if>
+            <if test="regionSerial != null and regionSerial != ''">region_serial,</if>
  			create_time
         )values(
+			<if test="managementName != null and managementName != ''">#{managementName},</if>
+			<if test="managementType != null and managementType != ''">#{managementType},</if>
 			<if test="title != null and title != ''">#{title},</if>
 			<if test="province != null and province != ''">#{province},</if>
 			<if test="unit != null and unit != ''">#{unit},</if>
@@ -63,10 +85,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 			<if test="projectField != null and projectField != ''">#{projectField},</if>
 			<if test="projectProfile != null and projectProfile != ''">#{projectProfile},</if>
 			<if test="briefDescription != null and briefDescription != ''">#{briefDescription},</if>
+			<if test="innovation != null and innovation != ''">#{innovation},</if>
+            <if test="practicability != null and practicability != ''">#{practicability},</if>
+            <if test="exhibition != null and exhibition != ''">#{exhibition},</if>
 			<if test="attachUrl != null and attachUrl != ''">#{attachUrl},</if>
 			<if test="account != null and account != ''">#{account},</if>
 			<if test="userName != null and userName != ''">#{userName},</if>
 			<if test="saveType != null and saveType != ''">#{saveType},</if>
+			<if test="authorNumber != null and authorNumber != ''">#{authorNumber},</if>
+			<if test="regionSerial != null and regionSerial != ''">#{regionSerial},</if>
  			sysdate()
 		)
     </insert>
@@ -74,6 +101,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDecorationList" parameterType="com.ruoyi.project.zerocarbon.domain.vo.DeclarationVo" resultMap="DeclarationResult">
         <include refid="selectDeclaration"/>
         <where>
+            <if test="managementName != null and managementName != ''">
+                AND management_name = #{managementName}
+            </if>
+            <if test="managementType != null and managementType != ''">
+                AND management_type = #{managementType}
+            </if>
             <if test="title != null and title != ''">
                 AND title = #{title}
             </if>
@@ -110,6 +143,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     #{typeItem}
                 </foreach>
             </if>
+            <if test="authorNumber != null and authorNumber != ''">
+                AND author_number = #{authorNumber}
+            </if>
+            <if test="regionSerial != null and regionSerial != ''">
+                AND region_serial = #{regionSerial}
+            </if>
         </where>
         order by id desc
     </select>
@@ -117,6 +156,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <update id="updateById" parameterType="Declaration">
         update declaration
         <set>
+            <if test="managementName != null and managementName != ''">management_name = #{managementName},</if>
+            <if test="managementType != null and managementType != ''">management_type = #{managementType},</if>
             <if test="title != null and title != ''">title = #{title},</if>
             <if test="province != null and province != ''">province = #{province},</if>
             <if test="unit != null and unit != ''">unit = #{unit},</if>
@@ -126,10 +167,15 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="projectField != null and projectField != ''">project_field = #{projectField},</if>
             <if test="projectProfile != null and projectProfile != ''">project_profile = #{projectProfile},</if>
             <if test="briefDescription != null and briefDescription != ''">brief_description = #{briefDescription},</if>
+            <if test="innovation != null and innovation != ''">innovation = #{innovation},</if>
+            <if test="practicability != null and practicability != ''">practicability = #{practicability},</if>
+            <if test="exhibition != null and exhibition != ''">exhibition = #{exhibition},</if>
             <if test="attachUrl != null and attachUrl != ''">attach_url = #{attachUrl},</if>
             <if test="account != null and account != ''">account = #{account},</if>
             <if test="userName != null and userName != ''">user_name = #{userName},</if>
             <if test="saveType != null and saveType != ''">save_type = #{saveType},</if>
+            <if test="authorNumber != null and authorNumber != ''">author_number = #{authorNumber},</if>
+            <if test="regionSerial != null and regionSerial != ''">region_serial = #{regionSerial},</if>
  			update_time = sysdate()
         </set>
         where id = #{id}
