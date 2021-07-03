@@ -1,6 +1,6 @@
 package com.ruoyi.project.zerocarbon.mapper;
 
-import com.ruoyi.project.zerocarbon.domain.DeclarationFile;
+import com.ruoyi.project.zerocarbon.domain.DeclareFile;
 
 import java.util.List;
 
@@ -11,9 +11,9 @@ import java.util.List;
  */
 public interface DeclareFileMapper
 {
-    public int insert(DeclarationFile declarationFile);
+    public int insert(DeclareFile DeclareFile);
 
-    public List<DeclarationFile> selectByDeclarationId(Long declarationId);
+    public List<DeclareFile> selectByDeclarationId(Long declarationId);
 
     public int removeByDeclarationId(Long declarationId);
 

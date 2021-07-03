@@ -71,10 +71,7 @@ public class SysUserServiceImpl implements ISysUserService
                     if (CollectionUtils.isNotEmpty(userRegions)){
                         sysUser.setRegionList(userRegions.stream().map(UserRegion::getRegion).collect(Collectors.toList()));
                     }
-                    List<Integer> roleIdList = roleMapper.selectRoleListByUserId(sysUser.getUserId());
-                    if (CollectionUtils.isNotEmpty(roleIdList)){
-                        sysUser.setRoleIds(roleIdList.toArray(new Long[roleIdList.size()]));
-                    }
+                    sysUser.setRoles(roleMapper.selectRolePermissionByUserId(sysUser.getUserId()));
                 }
             });
         }

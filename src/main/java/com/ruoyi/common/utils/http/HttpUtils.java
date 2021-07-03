@@ -98,7 +98,7 @@ public class HttpUtils
     }
 
     public static String sendPost(String url, String param){
-        return sendPost(url, param);
+        return sendPost(url, param,null);
     }
 
     /**

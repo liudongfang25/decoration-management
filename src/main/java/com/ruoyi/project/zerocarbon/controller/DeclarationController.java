@@ -8,7 +8,7 @@ import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.zerocarbon.auth.APIValidateUtil;
 import com.ruoyi.project.zerocarbon.auth.AccountLoginDTO;
 import com.ruoyi.project.zerocarbon.domain.Declaration;
-import com.ruoyi.project.zerocarbon.domain.DeclarationFile;
+import com.ruoyi.project.zerocarbon.domain.DeclareFile;
 import com.ruoyi.project.zerocarbon.domain.DeclareAuthor;
 import com.ruoyi.project.zerocarbon.domain.dto.DeclarationDTO;
 import com.ruoyi.project.zerocarbon.mapper.DeclarationMapper;
@@ -61,6 +61,8 @@ public class DeclarationController extends BaseController {
     private String tokenUrl;
     @Value("${declaration.auth.loginUrl}")
     private String loginUrl;
+    @Value("${declaration.auth.logoutUrl}")
+    private String logoutUrl;
 
     /**
      * 登录
@@ -68,46 +70,48 @@ public class DeclarationController extends BaseController {
      * @return
      */
     @GetMapping("/login")
-    public AjaxResult login(@Validated @RequestBody AccountLoginDTO dto) {
+    public AjaxResult login(AccountLoginDTO dto) {
         //每个用户只能提交一次
         Assert.notNull(dto.getAccount());
         Assert.notNull(dto.getPassword());
-//        String loginUrl = "https://third.api.zyh365.com/api/userCenter/login.do";
-        String rspStr = "username="+dto.getAccount()+"&password="+dto.getPassword();
-        String response = HttpUtils.sendPost(loginUrl, rspStr);
-        return AjaxResult.success(JSONObject.parseObject(response));
-    }
-
-    /**
-     * 证件号登录
-     * @param dto
-     * @return
-     */
-    @GetMapping("/loginByIdcard")
-    public AjaxResult loginByIdcard(@Validated @RequestBody AccountLoginDTO dto) {
-        //每个用户只能提交一次
-        Assert.notNull(dto.getAccount());
-        Assert.notNull(dto.getPassword());
-        //        String loginUrl = "https://third.api.zyh365.com/api/userCenter/login.do";
-        String rspStr = "idcard="+dto.getAccount()+"&idcardEncrypt="+dto.getPassword();
-        String response = HttpUtils.sendPost(loginUrl, rspStr);
-        return AjaxResult.success(JSONObject.parseObject(response));
+        Map<String,String> mapv=new HashMap<String, String>();
+        mapv.put("AccessKeyId", accessKeyId);
+        mapv.put("username", dto.getAccount());
+        mapv.put("password", dto.getPassword());
+        try {
+            String key = apiValidateUtil.computeSignature(mapv, accessKeySecret);
+            String rspStr = "username="+dto.getAccount()+"&password="+dto.getPassword()+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+key;
+            String response = HttpUtils.sendPost(loginUrl, rspStr);
+            return AjaxResult.success(JSONObject.parseObject(response));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AjaxResult.success("登录失败");
     }
 
     /**
      * 退出登录
-     * @param dto
+     * @param token
      * @return
      */
-    @PostMapping("/logout")
-    public AjaxResult logout(@Validated @RequestBody AccountLoginDTO dto) {
+    @GetMapping("/logout")
+    public AjaxResult logout(String token) {
         //每个用户只能提交一次
-        Assert.notNull(dto.getAccount());
-        Assert.notNull(dto.getPassword());
-        //        String loginUrl = "https://third.api.zyh365.com/api/userCenter/login.do";
-        String rspStr = "username="+dto.getAccount()+"&password="+dto.getPassword();
-        String response = HttpUtils.sendPost(loginUrl, rspStr);
-        return AjaxResult.success(JSONObject.parseObject(response));
+        Assert.notNull(token);
+        if (StringUtils.isEmpty(token)){
+            return AjaxResult.error("token不能为空");
+        }
+        Map<String,String> mapv=new HashMap<String, String>();
+        mapv.put("AccessKeyId", accessKeyId);
+        try {
+            String key = apiValidateUtil.computeSignature(mapv, accessKeySecret);
+            String rspStr = "&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+key;
+            String response = HttpUtils.sendPost(logoutUrl, rspStr, token);
+            return AjaxResult.success(JSONObject.parseObject(response));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return AjaxResult.error("退出登录失败");
     }
 
     @GetMapping("/signature/get")
@@ -175,7 +179,40 @@ public class DeclarationController extends BaseController {
         return AjaxResult.error("获取志愿者id失败");
     }
 
-//    public static void main(String[] args) {
+    //    public static void main(String[] args) {
+    ////        String rspStr = "username=18611432234&password=dongfang";
+    //        String loginUrl = "https://third.api.zyh365.com/api/userCenter/login.do";
+    //        Map<String,String> mapv=new HashMap<String, String>();
+    //        mapv.put("AccessKeyId", "a0f215286d96449baeac25dc179a714a");
+    //        mapv.put("username", "341222199105155252");
+    //        mapv.put("password", "dongfang");
+    //        try {
+    //            String s = new APIValidateUtil().computeSignature(mapv, "a333fe38ecc34de2b4dc0b7704a02ef5");
+    //            System.out.println(mapv.toString());
+    //            //            String rspStr = "ip=" + ip + "&json=true";
+    //            String rspStr = "username=341222199105155252&password=dongfang"+"&AccessKeyId="+mapv.get("AccessKeyId")+"&Signature="+s;
+    //            System.out.println(rspStr);
+    //            String s1 = HttpUtils.sendPost(loginUrl, rspStr);
+    //
+    //            System.out.println(s1);
+    //        } catch (Exception e) {
+    //            e.printStackTrace();
+    //        }
+
+    //        Map<String,String> mapv=new HashMap<String, String>();
+    //        mapv.put("AccessKeyId", "a0f215286d96449baeac25dc179a714a");
+    //        try {
+    //            String key = new APIValidateUtil().computeSignature(mapv, "a333fe38ecc34de2b4dc0b7704a02ef5");
+    //            String rspStr = "&AccessKeyId=" + mapv.get("AccessKeyId") + "&Signature=" + key;
+    //            String response = HttpUtils.sendPost("https://third.api.zyh365.com/api/login/token/loginInfoByShareToken.do", rspStr, "1625293449961ffe3bf0bbd2147c59e78ee4386a866e8");
+    //        }catch (Exception e){
+    //
+    //        }
+    //        String response = HttpUtils.sendPost(loginUrl, rspStr);
+    //        System.out.println(response);
+    //    }
+
+    //    public static void main(String[] args) {
 ////        Map<String,String> mapv=new HashMap<String, String>();
 ////        mapv.put("AccessKeyId", "a0f215286d96449baeac25dc179a714a");
 ////        mapv.put("zyzid", "1621735478637215929cb86994f57bd6d43b3689a288f");
@@ -272,9 +309,9 @@ public class DeclarationController extends BaseController {
                     declareAuthorMapper.insert(declareAuthor);
                 }
             }
-            if (!CollectionUtils.isEmpty(dto.getDeclarationFiles())){
-                for (int i = 0; i < dto.getDeclarationFiles().size(); i++) {
-                    DeclarationFile declareFile = dto.getDeclarationFiles().get(i);
+            if (!CollectionUtils.isEmpty(dto.getDeclareFiles())){
+                for (int i = 0; i < dto.getDeclareFiles().size(); i++) {
+                    DeclareFile declareFile = dto.getDeclareFiles().get(i);
                     declareFile.setDeclarationId(declarationId);
                     declareFileMapper.insert(declareFile);
                 }
@@ -308,9 +345,9 @@ public class DeclarationController extends BaseController {
                     declareAuthorMapper.insert(declareAuthor);
                 }
             }
-            if (!CollectionUtils.isEmpty(dto.getDeclarationFiles())){
-                for (int i = 0; i < dto.getDeclarationFiles().size(); i++) {
-                    DeclarationFile declareFile = dto.getDeclarationFiles().get(i);
+            if (!CollectionUtils.isEmpty(dto.getDeclareFiles())){
+                for (int i = 0; i < dto.getDeclareFiles().size(); i++) {
+                    DeclareFile declareFile = dto.getDeclareFiles().get(i);
                     declareFile.setDeclarationId(declarationHistory.getId());
                     declareFileMapper.insert(declareFile);
                 }
@@ -329,9 +366,9 @@ public class DeclarationController extends BaseController {
                     declareAuthorMapper.insert(declareAuthor);
                 }
             }
-            if (!CollectionUtils.isEmpty(dto.getDeclarationFiles())){
-                for (int i = 0; i < dto.getDeclarationFiles().size(); i++) {
-                    DeclarationFile declareFile = dto.getDeclarationFiles().get(i);
+            if (!CollectionUtils.isEmpty(dto.getDeclareFiles())){
+                for (int i = 0; i < dto.getDeclareFiles().size(); i++) {
+                    DeclareFile declareFile = dto.getDeclareFiles().get(i);
                     declareFile.setDeclarationId(declarationId);
                     declareFileMapper.insert(declareFile);
                 }

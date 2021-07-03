@@ -1,6 +1,6 @@
 package com.ruoyi.project.zerocarbon.domain.dto;
 
-import com.ruoyi.project.zerocarbon.domain.DeclarationFile;
+import com.ruoyi.project.zerocarbon.domain.DeclareFile;
 import com.ruoyi.project.zerocarbon.domain.DeclareAuthor;
 import lombok.Data;
 
@@ -31,6 +31,6 @@ public class DeclarationDTO implements Serializable {
   private String userName;
   private Integer saveType;//0：草稿；1：提交
   private List<DeclareAuthor> declareAuthors;
-  private List<DeclarationFile> declarationFiles;
+  private List<DeclareFile> DeclareFiles;
 
 }

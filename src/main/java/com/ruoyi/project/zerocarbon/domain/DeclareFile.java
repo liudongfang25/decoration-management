@@ -6,7 +6,7 @@ import lombok.experimental.Accessors;
 
 @Data
 @Accessors(chain = true)
-public class DeclarationFile extends BaseEntity {
+public class DeclareFile extends BaseEntity {
 
   private Long id;
 

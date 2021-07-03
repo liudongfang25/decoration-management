@@ -132,7 +132,7 @@ gen:
   tablePrefix: sys_
 
 declaration:
-  filePath: /home
+  filePath: /home/management
   auth:
     accessKeyId: a0f215286d96449baeac25dc179a714a
     accessKeySecret: a333fe38ecc34de2b4dc0b7704a02ef5

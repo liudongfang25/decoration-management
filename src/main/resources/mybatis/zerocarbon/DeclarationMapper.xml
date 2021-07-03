@@ -102,31 +102,31 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectDeclaration"/>
         <where>
             <if test="managementName != null and managementName != ''">
-                AND management_name = #{managementName}
+                AND management_name like concat('%', #{managementName}, '%')
             </if>
             <if test="managementType != null and managementType != ''">
                 AND management_type = #{managementType}
             </if>
             <if test="title != null and title != ''">
-                AND title = #{title}
+                AND title like concat('%', #{title}, '%')
             </if>
             <if test="region != null and region != '' and region != '全国'">
                 AND province = #{region}
             </if>
             <if test="unit != null and unit != ''">
-                AND unit = #{unit}
+                AND unit like concat('%', #{unit}, '%')
             </if>
             <if test="head != null and head != ''">
-                AND head = #{head}
+                AND head like concat('%', #{head}, '%')
             </if>
             <if test="contactNumber != null and contactNumber != ''">
                 AND contact_number like concat('%', #{contactNumber}, '%')
             </if>
             <if test="projectType != null and projectType != ''">
-                AND project_type = #{projectType}
+                AND project_type like concat('%', #{projectType}, '%')
             </if>
             <if test="projectField != null and projectField != ''">
-                AND project_field = #{projectField}
+                AND project_field like concat('%', #{projectField}, '%')
             </if>
             <if test="account != null and account != ''">
                 AND account = #{account}
@@ -147,7 +147,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 AND author_number = #{authorNumber}
             </if>
             <if test="regionSerial != null and regionSerial != ''">
-                AND region_serial = #{regionSerial}
+                AND region_serial like concat('%', #{regionSerial}, '%')
             </if>
         </where>
         order by id desc

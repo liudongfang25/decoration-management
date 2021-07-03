@@ -4,7 +4,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.project.zerocarbon.mapper.DeclareFileMapper">
     
-    <resultMap type="DeclarationFile" id="DeclarationFileResult">
+    <resultMap type="DeclareFile" id="DeclareFileResult">
         <id     property="id"      column="id"      />
         <result property="declarationId"   column="declaration_id"  />
         <result property="type"    column="type"    />
@@ -13,17 +13,17 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <result property="updateTime"    column="update_time"    />
     </resultMap>
     
-    <sql id="selectDeclarationFileVo">
+    <sql id="selectDeclareFileVo">
         select *
-		from declaration_file
+		from declare_file
     </sql>
 
-    <select id="selectByDeclarationId" parameterType="Long" resultMap="DeclarationFileResult">
-        <include refid="selectDeclareAuthorVo"/>
+    <select id="selectByDeclareId" parameterType="Long" resultMap="DeclareFileResult">
+        <include refid="selectDeclareFileVo"/>
         where declaration_id = #{declarationId}
     </select>
 
-    <insert id="insert" parameterType="DeclareAuthor" useGeneratedKeys="true" keyProperty="id">
+    <insert id="insert" parameterType="DeclareFile" useGeneratedKeys="true" keyProperty="id">
         insert into declaration_file (
         <if test="declarationId != null and declarationId != '' ">declaration_id,</if>
         <if test="type != null and type != '' ">type,</if>
@@ -37,7 +37,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
     </insert>
 
-    <delete id="removeByDeclarationId" parameterType="Long">
+    <delete id="removeByDeclareId" parameterType="Long">
         delete from declaration_file where declaration_id = #{declarationId}
     </delete>
     
