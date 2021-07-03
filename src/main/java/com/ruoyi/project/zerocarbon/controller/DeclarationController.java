@@ -6,6 +6,7 @@ import com.ruoyi.common.utils.http.HttpUtils;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.project.zerocarbon.auth.APIValidateUtil;
+import com.ruoyi.project.zerocarbon.auth.AccountLoginDTO;
 import com.ruoyi.project.zerocarbon.domain.Declaration;
 import com.ruoyi.project.zerocarbon.domain.DeclarationFile;
 import com.ruoyi.project.zerocarbon.domain.DeclareAuthor;
@@ -58,6 +59,56 @@ public class DeclarationController extends BaseController {
     private String zyzUrl;
     @Value("${declaration.auth.tokenUrl}")
     private String tokenUrl;
+    @Value("${declaration.auth.loginUrl}")
+    private String loginUrl;
+
+    /**
+     * 登录
+     * @param dto
+     * @return
+     */
+    @GetMapping("/login")
+    public AjaxResult login(@Validated @RequestBody AccountLoginDTO dto) {
+        //每个用户只能提交一次
+        Assert.notNull(dto.getAccount());
+        Assert.notNull(dto.getPassword());
+//        String loginUrl = "https://third.api.zyh365.com/api/userCenter/login.do";
+        String rspStr = "username="+dto.getAccount()+"&password="+dto.getPassword();
+        String response = HttpUtils.sendPost(loginUrl, rspStr);
+        return AjaxResult.success(JSONObject.parseObject(response));
+    }
+
+    /**
+     * 证件号登录
+     * @param dto
+     * @return
+     */
+    @GetMapping("/loginByIdcard")
+    public AjaxResult loginByIdcard(@Validated @RequestBody AccountLoginDTO dto) {
+        //每个用户只能提交一次
+        Assert.notNull(dto.getAccount());
+        Assert.notNull(dto.getPassword());
+        //        String loginUrl = "https://third.api.zyh365.com/api/userCenter/login.do";
+        String rspStr = "idcard="+dto.getAccount()+"&idcardEncrypt="+dto.getPassword();
+        String response = HttpUtils.sendPost(loginUrl, rspStr);
+        return AjaxResult.success(JSONObject.parseObject(response));
+    }
+
+    /**
+     * 退出登录
+     * @param dto
+     * @return
+     */
+    @PostMapping("/logout")
+    public AjaxResult logout(@Validated @RequestBody AccountLoginDTO dto) {
+        //每个用户只能提交一次
+        Assert.notNull(dto.getAccount());
+        Assert.notNull(dto.getPassword());
+        //        String loginUrl = "https://third.api.zyh365.com/api/userCenter/login.do";
+        String rspStr = "username="+dto.getAccount()+"&password="+dto.getPassword();
+        String response = HttpUtils.sendPost(loginUrl, rspStr);
+        return AjaxResult.success(JSONObject.parseObject(response));
+    }
 
     @GetMapping("/signature/get")
     public AjaxResult getSignature(String zyzid)

@@ -706,10 +706,10 @@ CREATE TABLE `declaration` (
   `project_type` varchar(255) DEFAULT NULL COMMENT '项目组别或项目类型',
   `project_field` varchar(255) DEFAULT NULL COMMENT '项目领域',
   `project_profile` varchar(1000) DEFAULT NULL COMMENT '项目简介',
-  `brief_description` varchar(6000) DEFAULT NULL COMMENT '简要说明',
-  `innovation` varchar(6000) DEFAULT NULL COMMENT '创新性',
-  `practicability` varchar(6000) DEFAULT NULL COMMENT '实用性',
-  `exhibition` varchar(6000) DEFAULT NULL COMMENT '展示性',
+  `brief_description` varchar(4000) DEFAULT NULL COMMENT '简要说明',
+  `innovation` varchar(4000) DEFAULT NULL COMMENT '创新性',
+  `practicability` varchar(4000) DEFAULT NULL COMMENT '实用性',
+  `exhibition` varchar(4000) DEFAULT NULL COMMENT '展示性',
   `attach_url` varchar(255) DEFAULT NULL COMMENT '附件',
   `account` varchar(64) NOT NULL COMMENT '账号',
   `user_name` varchar(255) DEFAULT NULL COMMENT '创建人',
@@ -728,6 +728,17 @@ CREATE TABLE `declare_author` (
   `position` varchar(255) DEFAULT NULL COMMENT '职务',
   `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
   `contact_number` varchar(255) DEFAULT NULL COMMENT '联系方式',
+  `create_time` datetime DEFAULT NULL,
+  `update_time` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+
+drop table if exists declare_file;
+CREATE TABLE `declare_file` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `declaration_id` bigint(20) NOT NULL COMMENT '申报id',
+  `type` int(8) DEFAULT NULL COMMENT '项目报告WORD 1 项目报告PDF 2证明上传 3（总数至多5项）展示视频 4',
+  `path` varchar(255) DEFAULT NULL COMMENT '文件路径',
   `create_time` datetime DEFAULT NULL,
   `update_time` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)

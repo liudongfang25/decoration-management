@@ -138,3 +138,5 @@ declaration:
     accessKeySecret: a333fe38ecc34de2b4dc0b7704a02ef5
     zyzUrl: https://third.api.zyh365.com/api/volunteer/info.do
     tokenUrl: https://third.api.zyh365.com/api/login/token/loginInfoByShareToken.do
+    loginUrl: https://third.api.zyh365.com/api/userCenter/login.do
+    logoutUrl: https://third.api.zyh365.com/api/login/token/logout.do
