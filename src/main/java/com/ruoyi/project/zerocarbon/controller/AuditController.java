@@ -4,7 +4,6 @@ import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
 import com.ruoyi.project.zerocarbon.domain.Declaration;
-import com.ruoyi.project.zerocarbon.domain.DeclareAuthor;
 import com.ruoyi.project.zerocarbon.domain.UserRegion;
 import com.ruoyi.project.zerocarbon.domain.dto.DeclarationDTO;
 import com.ruoyi.project.zerocarbon.domain.vo.DeclarationAuditVo;
@@ -13,7 +12,6 @@ import com.ruoyi.project.zerocarbon.mapper.UserRegionMapper;
 import com.ruoyi.project.zerocarbon.service.IDeclarationService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections.CollectionUtils;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
@@ -62,6 +60,20 @@ public class AuditController extends BaseController {
         Assert.notNull(auditVo.getSaveType());
 
         return AjaxResult.success(declarationService.auditDecoration(auditVo));
+    }
+
+    /**
+     * 项目管理列表
+     * @param declarationVo
+     * @return
+     */
+    @PostMapping("/decoration/management/list")
+    public TableDataInfo managementList(@Validated @RequestBody DeclarationVo declarationVo) {
+        //每个用户只能提交一次
+        startPage();
+        List<Declaration> list = declarationService.getDecorationList(declarationVo);
+        //0：待提交（草稿）；1：已提交; 2:已报名（APP预约）
+        return getDataTable(list);
     }
 
     /**
