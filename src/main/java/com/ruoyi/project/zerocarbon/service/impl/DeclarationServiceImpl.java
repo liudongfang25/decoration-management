@@ -1,5 +1,6 @@
 package com.ruoyi.project.zerocarbon.service.impl;
 
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.project.zerocarbon.domain.Declaration;
 import com.ruoyi.project.zerocarbon.domain.DeclareAuthor;
 import com.ruoyi.project.zerocarbon.domain.dto.DeclarationDTO;
@@ -12,6 +13,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +39,9 @@ public class DeclarationServiceImpl implements IDeclarationService
 
     @Override
     public List<Declaration> getDecorationList(DeclarationVo declarationVo) {
+        if (StringUtils.isEmpty(declarationVo.getRegion())){
+            return new ArrayList<>();
+        }
         return declarationMapper.selectDecorationList(declarationVo);
     }
 
