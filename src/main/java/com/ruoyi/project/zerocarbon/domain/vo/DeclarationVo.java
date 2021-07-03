@@ -11,6 +11,7 @@ import java.util.List;
 @Accessors(chain = true)
 public class DeclarationVo extends BaseEntity implements Serializable {
 
+  private Long userId;
   private String managementName;
   private Integer managementType;
   private String title;

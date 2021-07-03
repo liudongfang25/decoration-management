@@ -1,5 +1,6 @@
 package com.ruoyi.project.zerocarbon.controller;
 
+import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.framework.web.controller.BaseController;
 import com.ruoyi.framework.web.domain.AjaxResult;
 import com.ruoyi.framework.web.page.TableDataInfo;
@@ -17,6 +18,7 @@ import org.springframework.util.Assert;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -71,6 +73,14 @@ public class AuditController extends BaseController {
     public TableDataInfo managementList(@Validated @RequestBody DeclarationVo declarationVo) {
         //每个用户只能提交一次
         startPage();
+        if (declarationVo.getUserId() != null && StringUtils.isEmpty(declarationVo.getRegion())){
+            List<UserRegion> userRegions = userRegionMapper.selectByUserId(declarationVo.getUserId());
+            if (CollectionUtils.isNotEmpty(userRegions)){
+
+            }else {
+                return getDataTable(new ArrayList<>());
+            }
+        }
         List<Declaration> list = declarationService.getDecorationList(declarationVo);
         //0：待提交（草稿）；1：已提交; 2:已报名（APP预约）
         return getDataTable(list);
