@@ -391,6 +391,7 @@ public class DeclarationController extends BaseController {
             BeanUtils.copyProperties(declarationHistory,declarationDTO);
             List<DeclareAuthor> collection = declareAuthorMapper.selectByDeclarationId(declarationHistory.getId());
             declarationDTO.setDeclareAuthors(collection);
+            declarationDTO.setDeclareFiles(declareFileMapper.selectByDeclarationId(declarationHistory.getId()));
             return AjaxResult.success(declarationDTO);
         }
         return AjaxResult.success();

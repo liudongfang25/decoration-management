@@ -18,13 +18,13 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 		from declare_file
     </sql>
 
-    <select id="selectByDeclareId" parameterType="Long" resultMap="DeclareFileResult">
+    <select id="selectByDeclarationId" parameterType="Long" resultMap="DeclareFileResult">
         <include refid="selectDeclareFileVo"/>
         where declaration_id = #{declarationId}
     </select>
 
     <insert id="insert" parameterType="DeclareFile" useGeneratedKeys="true" keyProperty="id">
-        insert into declaration_file (
+        insert into declare_file (
         <if test="declarationId != null and declarationId != '' ">declaration_id,</if>
         <if test="type != null and type != '' ">type,</if>
         <if test="path != null and path != '' ">path,</if>
@@ -37,8 +37,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         )
     </insert>
 
-    <delete id="removeByDeclareId" parameterType="Long">
-        delete from declaration_file where declaration_id = #{declarationId}
+    <delete id="removeByDeclarationId" parameterType="Long">
+        delete from declare_file where declaration_id = #{declarationId}
     </delete>
     
 </mapper>
